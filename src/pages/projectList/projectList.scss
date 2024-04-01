@@ -1,16 +1,9 @@
-.projectList{
-    position: relative;
-    .deleteForm{
-        position: absolute;
-        top: -42px;
-        right: 5px; 
-    }
-    .dataGrid{
-        background-color: white;
-        padding: 20px;
-
-        .MuiDataGrid-toolbarContainer{
-            flex-direction: row-reverse;
-        }
+.action{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    .link{
+        text-decoration: none;
+        color: black;
     }
 }

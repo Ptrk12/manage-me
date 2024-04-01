@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { localStorageWorker } from '../../storage/localStorageWorker';
 import "./projectList.scss";
 import { Link } from 'react-router-dom';
-import { Button } from '@mui/material';
 import { GridColDef, GridRowSelectionModel, DataGrid, GridToolbar } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import CheckIcon from '@mui/icons-material/Check';
+import DataTable from '../../components/dataTable/DataTable';
 
 const ProjectList = () => {
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
@@ -74,8 +74,8 @@ const ProjectList = () => {
       width: 250,
       renderCell: (params) => {
         return <div className='action'>
-          <Link to={`/projects/${params.row.id}`}>
-            VIEW
+          <Link className='link' to={`/projects/${params.row.id}`}>
+            GO INTO
           </Link>
           <IconButton onClick={() => handleSetProjectActive(params.row.id.toString())}>
             <CheckIcon></CheckIcon>
@@ -86,40 +86,8 @@ const ProjectList = () => {
   ];
 
   return (
-    <div className='projectList'>
-    {selectedRow !== null && (
-      <form onClick={handleDelete} className='deleteForm'>
-        <Button variant="outlined" type='submit'>
-          Delete
-        </Button>
-      </form>
-    )}
-    <DataGrid
-      slots={{ toolbar: GridToolbar }}
-      slotProps={{
-        toolbar: {
-          showQuickFilter: true,
-          quickFilterProps: { debounceMs: 500 }
-        }
-      }}
-      className='dataGrid'
-      rows={rows}
-      columns={columns}
-      initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: 5,
-          },
-        },
-      }}
-      pageSizeOptions={[5]}
-      checkboxSelection
-      onRowSelectionModelChange={handleRowClick}
-      disableMultipleRowSelection
-      disableColumnFilter
-      disableDensitySelector
-      disableColumnSelector
-    />
+    <div>
+      <DataTable columns ={columns} rows={rows} handleRowClick={handleRowClick} handleDelete={handleDelete} selectedRow={selectedRow} />
   </div>
   );
 }
