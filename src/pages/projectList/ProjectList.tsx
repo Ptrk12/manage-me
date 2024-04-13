@@ -34,7 +34,7 @@ const ProjectList = () => {
     foundProject.isActive = true;
     localStorage.setItem(projectId,JSON.stringify(foundProject))
   }
-
+console.log(rows)
   const handleDelete = () => {
     if (selectedRow != null) {
       localStorageWorker.delete(selectedRow);

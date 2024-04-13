@@ -1,7 +1,7 @@
 import userStoryType from "./userStoryType";
 
 class projectType {
-  static nextId = 1;
+  static nextId = Math.random();
 
   id: number;
   projectId: string;

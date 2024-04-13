@@ -35,8 +35,6 @@ const Project: React.FC = () => {
             projectDescription: ''
         });
     };
-    
-
     return (
         <div className='projects'>
             <div className='form'>

@@ -22,7 +22,7 @@ type Props = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleOnChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (newUserStory: userStoryType) => void;
-  handleTextAreaChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void; // Include handleTextAreaChange in Props
+  handleTextAreaChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void; 
   handleOnChangeSelect?: (e: SelectChangeEvent) => void;
   selectValues?: string[];
   priority: Priority;
@@ -65,7 +65,7 @@ const Add = (props: Props) => {
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     handleSubmit(userStoryData);
-    setOpen(false); // Close the modal after submitting
+    setOpen(false);
   };
 
   return (
@@ -87,7 +87,7 @@ const Add = (props: Props) => {
                   <>
                     <label>{column.headerName}</label>
                     <textarea
-                      name={column.field} // Add name attribute for textarea
+                      name={column.field} 
                       onChange={handleTextAreaChange}
                       cols={87}
                       rows={10}
@@ -98,7 +98,7 @@ const Add = (props: Props) => {
                     <label>{column.headerName}</label>
                     <input
                       type="text"
-                      name={column.field} // Add name attribute for input
+                      name={column.field} 
                       onChange={handleOnChangeInput}
                       placeholder={column.field}
                     />
@@ -113,7 +113,7 @@ const Add = (props: Props) => {
                         <Select
                           labelId="select-label"
                           id="select"
-                          name={column.field} // Add name attribute for Select
+                          name={column.field} 
                           value={userStoryData.priority}
                           onChange={handleOnChangeSelect}
                         >
@@ -134,7 +134,7 @@ const Add = (props: Props) => {
                         <Select
                           labelId="select-label"
                           id="select"
-                          name={column.field} // Add name attribute for Select
+                          name={column.field} 
                           value={userStoryData.state}
                           onChange={handleOnChangeSelect}
                         >

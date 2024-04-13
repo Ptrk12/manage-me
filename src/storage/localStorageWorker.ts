@@ -6,8 +6,9 @@ export class localStorageWorker {
     localStorage.setItem(key,JSON.stringify(item));
   }
 
-  static getById(key: string): any | null {
-    const item = localStorage.getItem(key);
+  static getById(key: string | undefined): any | null {
+    if(key != undefined){
+      const item = localStorage.getItem(key);
     if (item) {
       try {
         const project: any = JSON.parse(item);
@@ -18,6 +19,7 @@ export class localStorageWorker {
       }
     }
     return null;
+    }
   }
 
   static delete(key:string){

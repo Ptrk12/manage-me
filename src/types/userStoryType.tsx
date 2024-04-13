@@ -3,7 +3,7 @@ import State from "../enums/State";
 import userType from "./userType";
 
 class userStoryType {
-  static nextId = 1;
+  static nextId = Math.random();
   id:number;
   name:string;
   description:string;
@@ -11,8 +11,10 @@ class userStoryType {
   createdDate?: number;
   state: State;
   createdBy: userType;
+  taskId?:number;
+  projectName: string;
 
-  constructor(name:string,description:string,priority:Priority,state:State,createdBy:userType){
+  constructor(name:string,description:string,priority:Priority,state:State,createdBy:userType,projectName:string){
     let date = new Date();
     this.id = userStoryType.nextId++;
     this.name = name;
@@ -21,6 +23,7 @@ class userStoryType {
     this.createdDate = date.getDate();
     this.state = state;
     this.createdBy = createdBy;
+    this.projectName = projectName;
   }
 }
 

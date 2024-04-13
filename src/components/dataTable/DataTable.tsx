@@ -12,6 +12,7 @@ type Props = {
 }
 
 const DataTable = (props:Props) => {
+  //console.log(props.rows)
     return (
         <div className='projectList'>
         {props.selectedRow !== null && (
