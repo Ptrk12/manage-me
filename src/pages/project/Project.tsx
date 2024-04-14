@@ -10,7 +10,8 @@ const Project: React.FC = () => {
         id: 0, 
         projectId: '', 
         projectName: '',
-        projectDescription: ''
+        projectDescription: '',
+        type:'project'
     });
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,14 +26,17 @@ const Project: React.FC = () => {
             id: Date.now(), 
             projectId: projectData.projectId,
             projectName: projectData.projectName,
-            projectDescription: projectData.projectDescription
+            projectDescription: projectData.projectDescription,
+            type:projectData.type
         };
         localStorageWorker.add(newProject.id.toString(), newProject);
+ 
         setProjectData({
             id: 0,
             projectId: '',
             projectName: '',
-            projectDescription: ''
+            projectDescription: '',
+            type:''
         });
     };
     return (

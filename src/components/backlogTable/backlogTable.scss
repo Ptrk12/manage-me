@@ -1,0 +1,70 @@
+.backlogTable {
+    --colorHeight: 50px;
+    display: flex;
+    gap: 70px;
+    padding: 20px;
+    h3{
+        margin: 0;
+        margin-bottom: 10px;
+    }
+
+    .item {
+        position: relative;
+        letter-spacing: 2px;
+        border: 1px solid rgb(172, 172, 172);
+        border-radius: 10px;
+        -webkit-box-shadow: 3px 13px 24px 3px rgba(66, 68, 90, 1);
+        -moz-box-shadow: 3px 13px 24px 3px rgba(66, 68, 90, 1);
+        box-shadow: 3px 13px 24px 3px rgba(66, 68, 90, 1);
+        padding:7px;
+        background-color: rgb(231, 231, 231);
+        .button{
+            position: absolute;
+            bottom: 7px;
+            right: 7px;
+        }
+    }
+
+    .backlog,
+    .toDo,
+    .doing,
+    .done {
+        background-color: rgb(209, 209, 209);
+        max-width: 30%;
+        min-width: 30%;
+        min-height: 500px;
+    }
+
+    .backlog {
+        .colorTitle {
+            margin: 0;
+            background-color: #e0655c;
+            height: var(--colorHeight);
+        }
+
+    }
+
+    .toDo {
+        .colorTitle {
+            background-color: #d2d64f;
+            height: var(--colorHeight);
+        }
+
+    }
+
+    .doing {
+        .colorTitle {
+            background-color: #88e063;
+            height: var(--colorHeight);
+        }
+
+    }
+
+    .done {
+        .colorTitle {
+            background-color: #89e9fa;
+            height: var(--colorHeight);
+        }
+
+    }
+}

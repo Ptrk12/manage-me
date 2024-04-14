@@ -1,0 +1,9 @@
+.taskList{
+  z-index: 0;
+
+  .buttons{
+    display: flex;
+    justify-content: space-between;
+    padding: 7px;
+  }
+}

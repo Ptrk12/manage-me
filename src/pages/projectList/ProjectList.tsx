@@ -8,11 +8,12 @@ import CheckIcon from '@mui/icons-material/Check';
 import DataTable from '../../components/dataTable/DataTable';
 
 const ProjectList = () => {
+  const items = localStorageWorker.getAllItems();
+  const projects = items.filter(x=>x.type==="project");
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
-  const [rows, setRows] = useState(localStorageWorker.getAllItems());
-
+  const [rows, setRows] = useState(projects);
   useEffect(() => {
-    setRows(localStorageWorker.getAllItems());
+    setRows(projects);
   }, [selectedRow]);
 
   const handleRowClick = (rowSelectionModel: GridRowSelectionModel) => {
@@ -34,7 +35,7 @@ const ProjectList = () => {
     foundProject.isActive = true;
     localStorage.setItem(projectId,JSON.stringify(foundProject))
   }
-console.log(rows)
+
   const handleDelete = () => {
     if (selectedRow != null) {
       localStorageWorker.delete(selectedRow);
@@ -87,6 +88,7 @@ console.log(rows)
 
   return (
     <div>
+      <h3>Projects list</h3>
       <DataTable columns ={columns} rows={rows} handleRowClick={handleRowClick} handleDelete={handleDelete} selectedRow={selectedRow} />
   </div>
   );

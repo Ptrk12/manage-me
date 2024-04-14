@@ -5,13 +5,13 @@ import { localStorageWorker } from "../../storage/localStorageWorker";
 import { Link, useParams } from "react-router-dom";
 import Add from "../../components/add/Add";
 import AddIcon from "@mui/icons-material/Add";
-import { Icon, IconButton, SelectChangeEvent } from "@mui/material";
+import { Button, Icon, IconButton, SelectChangeEvent } from "@mui/material";
 import userStoryType from "../../types/userStoryType";
 import Priority from "../../enums/Priority";
 import State from "../../enums/State";
 import userType from "../../types/userType";
-import projectType from "../../types/projectType";
-import { Task } from "@mui/icons-material";
+import "./userStory.scss"
+
 
 const Tasks = () => {
   let { id } = useParams();
@@ -26,7 +26,6 @@ const Tasks = () => {
   const userStories = storedData.userStories;
 
   const [rowsTask, setRowsTask] = useState(userStories || []);
-  console.log(rowsTask);
 
   const [userStoryData, setUserStoryData] = useState<userStoryType>({
     id: 0,
@@ -35,7 +34,8 @@ const Tasks = () => {
     priority: Priority.Low,
     state: State.ToDo,
     createdBy: tempUser,
-    projectName:project.projectName
+    projectName: project.projectName,
+    type: 'userStory'
   });
 
   const handleOnChangeSelect = (event: SelectChangeEvent) => {
@@ -84,7 +84,6 @@ const Tasks = () => {
 
   const handleRowClick = (rowSelectionModel: GridRowSelectionModel) => {
     if (rowSelectionModel.length === 1) {
-      console.log(rowSelectionModel);
       setSelectedRowTask(rowSelectionModel[0].toString());
     } else {
       setSelectedRowTask(null);
@@ -148,25 +147,31 @@ const Tasks = () => {
       renderCell: (params) => {
         return (
           <div className="action">
-            <Link className="link" to={`/projects/${params.row.id}`}>
+            <Link className="link" to={`/projects/${id}/userstory/${params.row.id}/tasklist`}>
               Go to task
             </Link>
             <div>
-            <Link className="link" to={`/projects/${params.row.id}/createtask`}>
-              Create Task
-            </Link>
+              <Link className="link" to={`/projects/${id}/userstory/${params.row.id}/createtask`}>
+                Create Task
+              </Link>
             </div>
           </div>
         );
       },
     },
   ];
-
   return (
     <div className="taskList">
-      <IconButton onClick={() => setOpen(true)}>
-        <AddIcon />
-      </IconButton>
+      <div className="buttons">
+        <IconButton onClick={() => setOpen(true)}>
+          <AddIcon />
+        </IconButton>
+        <Link to={`/projects/${id}/backlog`}>
+          <Button variant="contained" color="secondary">
+            BACKLOG
+          </Button>
+        </Link>
+      </div>
       {open && (
         <Add
           handleTextAreaChange={handleTextAreaChange}

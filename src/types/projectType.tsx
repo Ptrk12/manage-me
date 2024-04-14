@@ -9,13 +9,15 @@ class projectType {
   projectDescription: string;
   isActive?:boolean = false;
   userStories?: userStoryType[];
+  type:string;
 
-  constructor(projectId: string, projectName: string, projectDescription: string) {
+  constructor(projectId: string, projectName: string, projectDescription: string,type:string) {
       this.id = projectType.nextId++;
       this.projectId = projectId;
       this.projectName = projectName;
       this.projectDescription = projectDescription;
       this.userStories = [];
+      this.type = type;
   }
 }
 

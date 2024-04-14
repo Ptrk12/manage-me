@@ -15,6 +15,8 @@ import Priority from "../../enums/Priority";
 import State from "../../enums/State";
 import userStoryType from '../../types/userStoryType';
 import userType from "../../types/userType";
+import { localStorageWorker } from "../../storage/localStorageWorker";
+import { useParams } from "react-router-dom";
 
 type Props = {
   slug: string;
@@ -31,6 +33,8 @@ type Props = {
 
 
 const Add = (props: Props) => {
+    let { id } = useParams();
+    let project = localStorageWorker.getById(id?.toString());
   const { slug, columns, setOpen, handleSubmit } = props;
   const [userStoryData, setUserStoryData] = useState<userStoryType>({
     id: 0,
@@ -38,7 +42,10 @@ const Add = (props: Props) => {
     description: '',
     priority: Priority.Low,
     state: State.ToDo,
-    createdBy: new userType('patryk','b')
+    createdBy: new userType('patryk','b'),
+    projectName:project.projectName,
+    projectId:id,
+    type:'userStory'
   });
 
   const handleOnChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {

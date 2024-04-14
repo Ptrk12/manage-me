@@ -9,6 +9,8 @@ import Project from "./pages/project/Project";
 import Task from "./pages/Task/Task";
 import { Button } from "@mui/material";
 import UserStory from "./pages/UserSotires/UserStory";
+import TaskList from "./pages/taskList/TaskList";
+import Backlog from "./pages/Backlog/Backlog";
 
 const Layout = () => {
   return (
@@ -40,9 +42,17 @@ const router = createBrowserRouter([
         element: <UserStory />,
       },
       {
-        path: "/projects/:id/createtask",
+        path: "/projects/:projectId/userstory/:userStoryId/createtask",
         element: <Task />,
       },
+      {
+        path: "/projects/:projectId/userstory/:userStoryId/tasklist",
+        element: <TaskList />,
+      },
+      {
+        path: "/projects/:projectId/backlog",
+        element: <Backlog />,
+      }
     ],
   },
 ]);
