@@ -134,7 +134,7 @@ const Task = () => {
     if (projectId != undefined && userStoryId != undefined) {
       localStorageWorker.add(newTask.id.toString(), newTask);
     }
-    navigate(`/projects/${projectId}/userstory/${userStoryId}/tasklist`);
+    navigate(`/app/projects/${projectId}/userstory/${userStoryId}/tasklist`);
   };
   const handleOnChangeSelect = (e: SelectChangeEvent) => {
     setTaskData(prevData => ({

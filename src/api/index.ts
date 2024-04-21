@@ -2,9 +2,11 @@ import userType from "../types/userType";
 
 
 const express = require("express");
+const cors = require('cors');
 const app = express();
 const jwt = require("jsonwebtoken")
 app.use(express.json())
+app.use(cors());
 
 const users:userType[] = [new userType("patryk","bajak","haslo123"),new userType("test1","test2","haslo123")]
 let refreshTokens:string[] = [];

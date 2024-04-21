@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import axios from "axios";
 import Project from '../project/Project';
 import { useNavigate } from "react-router-dom";
+import "./loginPage.scss"
 
 const LoginPage = () => {
     

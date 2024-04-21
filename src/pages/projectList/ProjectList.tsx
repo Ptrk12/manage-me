@@ -75,7 +75,7 @@ const ProjectList = () => {
       width: 250,
       renderCell: (params) => {
         return <div className='action'>
-          <Link className='link' to={`/projects/${params.row.id}`}>
+          <Link className='link' to={`/app/projects/${params.row.id}`}>
             GO INTO
           </Link>
           <IconButton onClick={() => handleSetProjectActive(params.row.id.toString())}>

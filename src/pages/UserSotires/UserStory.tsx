@@ -11,6 +11,7 @@ import Priority from "../../enums/Priority";
 import State from "../../enums/State";
 import userType from "../../types/userType";
 import "./userStory.scss"
+import React from "react";
 
 
 const Tasks = () => {
@@ -147,11 +148,11 @@ const Tasks = () => {
       renderCell: (params) => {
         return (
           <div className="action">
-            <Link className="link" to={`/projects/${id}/userstory/${params.row.id}/tasklist`}>
+            <Link className="link" to={`/app/projects/${id}/userstory/${params.row.id}/tasklist`}>
               Go to task
             </Link>
             <div>
-              <Link className="link" to={`/projects/${id}/userstory/${params.row.id}/createtask`}>
+              <Link className="link" to={`/app/projects/${id}/userstory/${params.row.id}/createtask`}>
                 Create Task
               </Link>
             </div>
@@ -166,7 +167,7 @@ const Tasks = () => {
         <IconButton onClick={() => setOpen(true)}>
           <AddIcon />
         </IconButton>
-        <Link to={`/projects/${id}/backlog`}>
+        <Link to={`app/projects/${id}/backlog`}>
           <Button variant="contained" color="secondary">
             BACKLOG
           </Button>

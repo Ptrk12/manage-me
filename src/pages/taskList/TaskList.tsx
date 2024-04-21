@@ -93,7 +93,7 @@ const TaskList = () => {
         if (selectedRow == params.row.id.toString()) {
           return (
             <div className='action'>
-              <Link className='link' to={`/projects/${projectId}/userstory/${userStoryId}/createtask?taskId=${selectedRow}`}>
+              <Link className='link' to={`/app/projects/${projectId}/userstory/${userStoryId}/createtask?taskId=${selectedRow}`}>
                 Details
               </Link>
             </div>

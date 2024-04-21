@@ -10,6 +10,7 @@ import { Link, useParams } from "react-router-dom";
 import TaskType from "../../types/TaskType";
 import State from "../../enums/State";
 import { useState } from "react";
+import React from "react";
 
 const BacklogTable = (props: { props: TaskType[] }) => {
   const tasks = props.props;
@@ -68,7 +69,7 @@ const BacklogTable = (props: { props: TaskType[] }) => {
                   <MenuItem value={State.Done}>Done</MenuItem>
                 </Select>
                 <Link
-                  to={`/projects/${projectId}/userstory/${task.userStoryId}/createtask?taskId=${task.id}`}
+                  to={`/app/projects/${projectId}/userstory/${task.userStoryId}/createtask?taskId=${task.id}`}
                 >
                   <Button variant="outlined">Details</Button>
                 </Link>
@@ -110,7 +111,7 @@ const BacklogTable = (props: { props: TaskType[] }) => {
                   <MenuItem value={State.Done}>Done</MenuItem>
                 </Select>
                 <Link
-                  to={`/projects/${projectId}/userstory/${task.userStoryId}/createtask?taskId=${task.id}`}
+                  to={`/app/projects/${projectId}/userstory/${task.userStoryId}/createtask?taskId=${task.id}`}
                 >
                   <Button variant="outlined">Details</Button>
                 </Link>
@@ -152,7 +153,7 @@ const BacklogTable = (props: { props: TaskType[] }) => {
                   <MenuItem value={State.Done}>Done</MenuItem>
                 </Select>
                 <Link
-                  to={`/projects/${projectId}/userstory/${task.userStoryId}/createtask?taskId=${task.id}`}
+                  to={`/app/projects/${projectId}/userstory/${task.userStoryId}/createtask?taskId=${task.id}`}
                 >
                   <Button variant="outlined">Details</Button>
                 </Link>

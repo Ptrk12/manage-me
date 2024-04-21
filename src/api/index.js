@@ -2,9 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var userType_1 = require("../types/userType");
 var express = require("express");
+var cors = require('cors');
 var app = express();
 var jwt = require("jsonwebtoken");
 app.use(express.json());
+app.use(cors());
 var users = [new userType_1.default("patryk", "bajak", "haslo123"), new userType_1.default("test1", "test2", "haslo123")];
 var refreshTokens = [];
 app.post("/api/refresh", function (req, res) {

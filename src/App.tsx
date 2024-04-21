@@ -17,7 +17,7 @@ import LoginPage from "./pages/login/LoginPage";
 const Layout = () => {
   return (
     <div className="main">
-      <Link to={`/`}>
+      <Link to={`/app/projects`}>
         <Button variant="contained">HOME</Button>
       </Link>
       <div className="container">
