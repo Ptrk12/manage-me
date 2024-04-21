@@ -1,6 +1,5 @@
 import userType from "../types/userType";
 
-
 const express = require("express");
 const cors = require('cors');
 const app = express();
@@ -13,7 +12,6 @@ let refreshTokens:string[] = [];
 
 app.post("/api/refresh", (req:any, res:any) => {
   const refreshToken = req.body.token;
-
   if (!refreshToken) return res.status(401).json("You are not authenticated!");
   if (!refreshTokens.includes(refreshToken)) {
     return res.status(403).json("Refresh token is not valid!");
@@ -26,7 +24,6 @@ app.post("/api/refresh", (req:any, res:any) => {
     const newRefreshToken = generateRefreshToken(user);
 
     refreshTokens.push(newRefreshToken);
-
     res.status(200).json({
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,

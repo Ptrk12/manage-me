@@ -3,6 +3,7 @@ import axios from "axios";
 import Project from '../project/Project';
 import { useNavigate } from "react-router-dom";
 import "./loginPage.scss"
+import { json } from 'stream/consumers';
 
 const LoginPage = () => {
     
@@ -19,6 +20,8 @@ const LoginPage = () => {
         try{
             const response = await axios.post("http://localhost:5000/api/login",{username, password})
             setUser(response.data);
+            localStorage.setItem("token", JSON.stringify({token:response.data.accessToken}));
+            // console.log(response.data.accessToken);
             navigate("/app/projects");
         }catch(err){
             console.log(err);

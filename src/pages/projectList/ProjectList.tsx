@@ -8,7 +8,9 @@ import CheckIcon from '@mui/icons-material/Check';
 import DataTable from '../../components/dataTable/DataTable';
 
 const ProjectList = () => {
+  // localStorage.clear();
   const items = localStorageWorker.getAllItems();
+  console.log(items);
   const projects = items.filter(x=>x.type==="project");
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
   const [rows, setRows] = useState(projects);

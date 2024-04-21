@@ -27,19 +27,26 @@ export class localStorageWorker {
     localStorage.removeItem(key);
   }
 
-  static getAllItems():Array<any>{
-    var list = new Array<any>();
-
-    for(var i =0;i<localStorage.length;i++){
-      var key = localStorage.key(i);
-      if(key != null){
-        var value = localStorage.getItem(key);
-        if(value != null){
-          var item = JSON.parse(value)
-          list.push(item);
+  static getAllItems(): Array<any> {
+    const list = new Array<any>();
+  
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      console.log(`Processing key: ${key}`); // Log the key being processed
+      if (key !== null && key !== "token") {
+        const value = localStorage.getItem(key);
+        console.log(`Value for ${key}: ${value}`); // Log the value
+        if (value !== null) {
+          try {
+            const item = JSON.parse(value);
+            list.push(item);
+          } catch (e) {
+            console.error(`Error parsing JSON from localStorage at key '${key}':`, e);
+          }
         }
       }
     }
     return list;
   }
+  
 }

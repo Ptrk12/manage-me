@@ -30,7 +30,7 @@ const Project: React.FC = () => {
             type:projectData.type
         };
         localStorageWorker.add(newProject.id.toString(), newProject);
- 
+        console.log(newProject);
         setProjectData({
             id: 0,
             projectId: '',
