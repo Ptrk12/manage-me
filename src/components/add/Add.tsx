@@ -42,7 +42,7 @@ const Add = (props: Props) => {
     description: '',
     priority: Priority.Low,
     state: State.ToDo,
-    createdBy: new userType('patryk','b'),
+    createdBy: new userType('patryk','b',"123"),
     projectName:project.projectName,
     projectId:id,
     type:'userStory'

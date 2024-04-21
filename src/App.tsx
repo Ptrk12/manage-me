@@ -11,6 +11,8 @@ import { Button } from "@mui/material";
 import UserStory from "./pages/UserSotires/UserStory";
 import TaskList from "./pages/taskList/TaskList";
 import Backlog from "./pages/Backlog/Backlog";
+import React from "react";
+import LoginPage from "./pages/login/LoginPage";
 
 const Layout = () => {
   return (
@@ -31,28 +33,32 @@ const Layout = () => {
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <LoginPage />,
+  },
+  {
+    path: "/app",
     element: <Layout />,
     children: [
       {
-        path: "/",
+        path: "projects",
         element: <Project />,
       },
       {
-        path: "/projects/:id",
+        path: "projects/:id",
         element: <UserStory />,
       },
       {
-        path: "/projects/:projectId/userstory/:userStoryId/createtask",
+        path: "projects/:projectId/userstory/:userStoryId/createtask",
         element: <Task />,
       },
       {
-        path: "/projects/:projectId/userstory/:userStoryId/tasklist",
+        path: "projects/:projectId/userstory/:userStoryId/tasklist",
         element: <TaskList />,
       },
       {
-        path: "/projects/:projectId/backlog",
+        path: "projects/:projectId/backlog",
         element: <Backlog />,
-      }
+      },
     ],
   },
 ]);

@@ -15,7 +15,7 @@ import "./userStory.scss"
 
 const Tasks = () => {
   let { id } = useParams();
-  let tempUser = new userType("patryk", "b");
+  let tempUser = new userType("patryk", "b","123");
   let project = localStorageWorker.getById(id?.toString());
   const [selectedRowTask, setSelectedRowTask] = useState<string | null>(null);
   const [priority, setPriority] = useState("");
