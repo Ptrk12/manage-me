@@ -1,9 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from "axios";
 import Project from '../project/Project';
 import { useNavigate } from "react-router-dom";
 import "./loginPage.scss"
 import { json } from 'stream/consumers';
+import {gapi} from 'gapi-script'
+import Login from '../../components/login/Login';
+
+
+const clientId = '885875161738-3518co9fk4acq16tgs29qgeru0vrshlp.apps.googleusercontent.com'
 
 const LoginPage = () => {
     
@@ -13,6 +18,16 @@ const LoginPage = () => {
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(()=>{
+      function start(){
+        gapi.client.init({
+          clientId:clientId,
+          scope:""
+        })
+      };
+      gapi.load('client:auth2',start)
+    })
 
     const handleSubmit = async(e) => {
         e.preventDefault();
@@ -30,6 +45,7 @@ const LoginPage = () => {
 
   return (
     <div className="container">
+      <Login />
       <div className="login">
         <form onSubmit={handleSubmit}>
           <span className="formTitle">Login</span>

@@ -13,6 +13,7 @@ import TaskList from "./pages/taskList/TaskList";
 import Backlog from "./pages/Backlog/Backlog";
 import React from "react";
 import LoginPage from "./pages/login/LoginPage";
+import Logout from './components/Logout/Logout';
 
 const Layout = () => {
   return (
@@ -20,6 +21,7 @@ const Layout = () => {
       <Link to={`/app/projects`}>
         <Button variant="contained">HOME</Button>
       </Link>
+      <Logout />
       <div className="container">
         <div className="menuContainer"></div>
         <div className="contentContainer">
