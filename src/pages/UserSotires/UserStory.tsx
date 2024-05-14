@@ -167,7 +167,7 @@ const Tasks = () => {
         <IconButton onClick={() => setOpen(true)}>
           <AddIcon />
         </IconButton>
-        <Link to={`app/projects/${id}/backlog`}>
+        <Link to={`/app/projects/${id}/backlog`}>
           <Button variant="contained" color="secondary">
             BACKLOG
           </Button>

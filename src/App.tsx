@@ -14,12 +14,16 @@ import Backlog from "./pages/Backlog/Backlog";
 import React from "react";
 import LoginPage from "./pages/login/LoginPage";
 import Logout from './components/Logout/Logout';
+import Notifications from "./pages/Notifications/Notifications";
 
 const Layout = () => {
   return (
     <div className="main">
       <Link to={`/app/projects`}>
         <Button variant="contained">HOME</Button>
+      </Link>
+      <Link to={`/app/notifications`}>
+        <Button variant="contained">NOTIFICATIONS</Button>
       </Link>
       <Logout />
       <div className="container">
@@ -44,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "projects",
         element: <Project />,
+      },
+      {
+        path: "notifications",
+        element: <Notifications />,
       },
       {
         path: "projects/:id",

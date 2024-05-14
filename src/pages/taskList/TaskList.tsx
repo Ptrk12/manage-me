@@ -10,6 +10,8 @@ import userStoryType from '../../types/userStoryType';
 const TaskList = () => {
   const { projectId, userStoryId } = useParams<{ projectId: string, userStoryId: string }>();
   let items = localStorageWorker.getAllItems();
+  items =  items.filter(item => !Array.isArray(item));
+
   let project:projectType = items.find((x:projectType) => x.id.toString() == projectId)
   let userStoryInfo:userStoryType | undefined;
   if(project){

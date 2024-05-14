@@ -8,15 +8,25 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom"; // Import useHistory
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom"; 
 import State from "../../enums/State";
 import Priority from "../../enums/Priority";
 import "./task.scss"
 import TaskType from "../../types/TaskType";
 import { localStorageWorker } from "../../storage/localStorageWorker";
 import { start } from "repl";
+import { NotificationService } from "../../storage/Notifications";
+import {v4 as uuidv4} from 'uuid';
 
 const Task = () => {
+
+  interface Notification {
+    id: number;
+    message: string;
+    read: boolean;
+    type: string;
+  }
+
   const { projectId, userStoryId } = useParams<{ projectId: string, userStoryId: string }>();
   let userStory = localStorageWorker.getById(projectId?.toString());
   const location = useLocation();
@@ -132,6 +142,14 @@ const Task = () => {
       newTask.endDateDate = new Date(Date.now())
     }
     if (projectId != undefined && userStoryId != undefined) {
+      const notificationService = new NotificationService();
+      const newNotification: Notification = {
+        id: 1,
+        message: `New task created: ${newTask.name} for project ${newTask.projectName}`,
+        read: false,
+        type:'notification'
+      };
+      notificationService.send(newNotification);
       localStorageWorker.add(newTask.id.toString(), newTask);
     }
     navigate(`/app/projects/${projectId}/userstory/${userStoryId}/tasklist`);
