@@ -27,7 +27,12 @@ export class NotificationService {
 
   send(notification: Notification): void {
     const notifications = this.notificationsSubject.value;
-    notifications.push(notification);
+    const index = notifications.findIndex(n => n.id === notification.id);
+    if (index !== -1) {
+      notifications[index] = notification;
+    } else {
+      notifications.push(notification);
+    }
     this.saveNotificationsToStorage(notifications);
     this.notificationsSubject.next(notifications);
   }
@@ -42,5 +47,3 @@ export class NotificationService {
     );
   }
 }
-
-

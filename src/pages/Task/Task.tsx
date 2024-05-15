@@ -15,7 +15,7 @@ import "./task.scss"
 import TaskType from "../../types/TaskType";
 import { localStorageWorker } from "../../storage/localStorageWorker";
 import { start } from "repl";
-import { NotificationService } from "../../storage/Notifications";
+import { NotificationService } from "../../storage/NotificationsService";
 import {v4 as uuidv4} from 'uuid';
 
 const Task = () => {

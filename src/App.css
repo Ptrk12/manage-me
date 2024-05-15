@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+.notificationsButton{
+  position: relative;
+}
+.unread-notifications{
+  position: absolute;
+  background-color: red;
+  color: white;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  margin: 0;
+  border-radius: 10px;
+  left: 135px;
+  top:-7px;
+}
