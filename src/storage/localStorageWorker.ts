@@ -1,52 +1,86 @@
-import { Type } from "typescript";
-import axios from "axios";
+import {addDoc,collection, deleteDoc, doc, DocumentData, getDoc, getDocs, QuerySnapshot, setDoc, updateDoc} from "firebase/firestore"
+import {firestore} from "./firebase"
 
+const refProject = collection(firestore,"project")
+const refNotifications = collection(firestore,"notifications")
 export class localStorageWorker {
 
-  static add(key:string,item:any){
-    localStorage.setItem(key,JSON.stringify(item));
+  static async add(key: string, item: any) {
+    try {
+      const docRef = await setDoc(doc(refProject, key), item);
+      console.log('Document written with key: ', key);
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
   }
 
-  static getById(key: string | undefined): any | null {
-    if(key != undefined){
-      const item = localStorage.getItem(key);
-    if (item) {
-      try {
-        const project: any = JSON.parse(item);
-        return project;
-      } catch (error) {
-        console.error("Error parsing project from localStorage:", error);
+  static async addNotification(key: string, item: any) {
+    try {
+      const docRef = await setDoc(doc(refNotifications, key), item);
+      console.log('Document written with key: ', key);
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
+  }
+
+  static async getById(key: string): Promise<DocumentData | null> {
+    try {
+      const docRef = doc(firestore, "project", key);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data();
+      } else {
+        console.log("No such document!");
         return null;
       }
-    }
-    return null;
+    } catch (e) {
+      console.error('Error getting document: ', e);
+      return null;
     }
   }
 
-  static delete(key:string){
-    localStorage.removeItem(key);
+  static async delete(key: string): Promise<void> {
+    try {
+      const docRef = doc(firestore, "project", key);
+      await deleteDoc(docRef);
+      console.log(`Document with ID: ${key} deleted`);
+    } catch (e) {
+      console.error(`Error deleting document with ID: ${key}`, e);
+    }
   }
 
-  static getAllItems(): Array<any> {
-    const list = new Array<any>();
-  
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      console.log(`Processing key: ${key}`); // Log the key being processed
-      if (key !== null && key !== "token") {
-        const value = localStorage.getItem(key);
-        console.log(`Value for ${key}: ${value}`); // Log the value
-        if (value !== null) {
-          try {
-            const item = JSON.parse(value);
-            list.push(item);
-          } catch (e) {
-            console.error(`Error parsing JSON from localStorage at key '${key}':`, e);
-          }
-        }
-      }
+  static async deleteNotification(key: string): Promise<void> {
+    try {
+      const docRef = doc(firestore, "notifications", key);
+      await deleteDoc(docRef);
+      console.log(`Document with ID: ${key} deleted`);
+    } catch (e) {
+      console.error(`Error deleting document with ID: ${key}`, e);
     }
-    return list;
+  }
+
+  static async updateById(key: string, data: Partial<DocumentData>): Promise<void> {
+    try {
+      const docRef = doc(firestore, "project", key);
+      await updateDoc(docRef, data);
+      console.log(`Document with ID: ${key} updated`);
+    } catch (e) {
+      console.error(`Error updating document with ID: ${key}`, e);
+    }
+  }
+
+  static async getAll(): Promise<DocumentData[]> {
+    try {
+      const querySnapshot: QuerySnapshot = await getDocs(refProject);
+      const documents: DocumentData[] = [];
+      querySnapshot.forEach((doc) => {
+        documents.push({...doc.data() });
+      });
+      return documents;
+    } catch (e) {
+      console.error('Error getting documents: ', e);
+      return [];
+    }
   }
   
 }

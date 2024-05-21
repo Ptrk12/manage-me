@@ -5,37 +5,28 @@ import { localStorageWorker } from "../../storage/localStorageWorker";
 import { Link, useParams } from "react-router-dom";
 import Add from "../../components/add/Add";
 import AddIcon from "@mui/icons-material/Add";
-import { Button, Icon, IconButton, SelectChangeEvent } from "@mui/material";
+import { Button, IconButton, SelectChangeEvent } from "@mui/material"; // Removed unused imports
 import userStoryType from "../../types/userStoryType";
 import Priority from "../../enums/Priority";
 import State from "../../enums/State";
-import userType from "../../types/userType";
-import "./userStory.scss"
+import "./userStory.scss"; // Corrected the import path
 import React from "react";
 
 
 const Tasks = () => {
-  let { id } = useParams();
-  let tempUser = new userType("patryk", "b","123");
-  let project = localStorageWorker.getById(id?.toString());
+  const { id } = useParams();
   const [selectedRowTask, setSelectedRowTask] = useState<string | null>(null);
   const [priority, setPriority] = useState("");
   const [state, setState] = useState("");
   const [open, setOpen] = useState(false);
-  const [openTask, setOpenTask] = useState(false);
-  const storedData = localStorageWorker.getById(id);
-  const userStories = storedData.userStories;
-
-  const [rowsTask, setRowsTask] = useState(userStories || []);
-
+  const [rowsTask, setRowsTask] = useState<userStoryType[]>([]);
   const [userStoryData, setUserStoryData] = useState<userStoryType>({
     id: 0,
     name: "",
     description: "",
     priority: Priority.Low,
     state: State.ToDo,
-    createdBy: tempUser,
-    projectName: project.projectName,
+    projectName: "",
     type: 'userStory'
   });
 
@@ -66,22 +57,43 @@ const Tasks = () => {
     }));
   };
 
-
-  const handleSubmit = (newUserStory: userStoryType) => {
-    if (id !== undefined) {
-      let project = localStorageWorker.getById(id.toString());
-
-      if (!Array.isArray(project.userStories)) {
-        project.userStories = [];
+  const fetchData = async () => {
+    if (id != undefined) {
+      console.log("Fetching project with ID:", id);
+      const storedData = await localStorageWorker.getById(id.toString());
+      if (storedData) {
+        const userStories = storedData.userStories || [];
+        setRowsTask(userStories);
+        setUserStoryData((prevData) => ({
+          ...prevData,
+          projectName: storedData.projectName || "",
+        }));
+      } else {
+        console.log("No project found with ID:", id);
       }
-      newUserStory["id"] = Math.random();
-      project.userStories.push(newUserStory);
-
-      localStorage.setItem(id.toString(), JSON.stringify(project));
-
-      setRowsTask([...project.userStories]);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, [id]);
+  
+  const handleSubmit = async (newUserStory: userStoryType) => {
+    if (id !== undefined) {
+      const project = await localStorageWorker.getById(id.toString());
+      if (project != null) {
+        if (!Array.isArray(project?.userStories)) {
+          project.userStories = [];
+        }
+        newUserStory.id = Math.random();
+        project.userStories.push(newUserStory);
+  
+        localStorageWorker.updateById(id.toString(), project);
+        setRowsTask([...(project.userStories || [])]);
+      }
+    }
+  };
+  
 
   const handleRowClick = (rowSelectionModel: GridRowSelectionModel) => {
     if (rowSelectionModel.length === 1) {
@@ -91,26 +103,33 @@ const Tasks = () => {
     }
   };
 
-  const handleDelete = () => {
-    if (selectedRowTask != null) {
-      if (id != undefined) {
-        let project = localStorageWorker.getById(id.toString());
-        if (project.userStories) {
-          const index = project.userStories.findIndex(
-            (x: { id: number }) => x.id === Number(selectedRowTask)
-          );
-          if (index !== -1) {
-            project.userStories.splice(index, 1);
-            localStorage.setItem(id.toString(), JSON.stringify(project));
-            setRowsTask([...project.userStories]);
-          }
+  const handleDelete = async (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (e) {
+      e.preventDefault();
+    }
+    if (selectedRowTask !== null && id !== undefined) {
+      try {
+        const project = await localStorageWorker.getById(id.toString());
+        if (project && project.userStories) {
+
+          const updatedUserStories = project.userStories.filter(x=>x.id != selectedRowTask)
+          project.userStories = updatedUserStories;
+          await localStorageWorker.updateById(id.toString(), project);
+          
+          fetchData();
+        } else {
+          console.log("No project or user stories found");
         }
-        setSelectedRowTask(null);
+      } catch (error) {
+        console.error("Error deleting user story:", error);
       }
+    } else {
+      console.log("Invalid selectedRowTask or id");
     }
   };
+  
 
-  const columns: GridColDef<(typeof rowsTask)[number]>[] = [
+  const columns: GridColDef<userStoryType>[] = [
     {
       field: "name",
       headerName: "User story Name",
@@ -145,22 +164,21 @@ const Tasks = () => {
       field: "actions",
       headerName: "Actions",
       width: 250,
-      renderCell: (params) => {
-        return (
-          <div className="action">
-            <Link className="link" to={`/app/projects/${id}/userstory/${params.row.id}/tasklist`}>
-              Go to task
+      renderCell: (params) => (
+        <div className="action">
+          <Link className="link" to={`/app/projects/${id}/userstory/${params.row.id}/tasklist`}>
+            Go to task
+          </Link>
+          <div>
+            <Link className="link" to={`/app/projects/${id}/userstory/${params.row.id}/createtask`}>
+              Create Task
             </Link>
-            <div>
-              <Link className="link" to={`/app/projects/${id}/userstory/${params.row.id}/createtask`}>
-                Create Task
-              </Link>
-            </div>
           </div>
-        );
-      },
+        </div>
+      ),
     },
   ];
+
   return (
     <div className="taskList">
       <div className="buttons">

@@ -8,36 +8,54 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom"; 
+import { useLocation, useNavigate, useParams } from "react-router-dom"; 
 import State from "../../enums/State";
 import Priority from "../../enums/Priority";
-import "./task.scss"
+import "./task.scss";
 import TaskType from "../../types/TaskType";
 import { localStorageWorker } from "../../storage/localStorageWorker";
-import { start } from "repl";
 import { NotificationService } from "../../storage/NotificationsService";
-import {v4 as uuidv4} from 'uuid';
+import { DocumentData } from "firebase/firestore";
 
 const Task = () => {
-
-  interface Notification {
-    id: number;
-    message: string;
-    read: boolean;
-    type: string;
-  }
-
-  const { projectId, userStoryId } = useParams<{ projectId: string, userStoryId: string }>();
-  let userStory = localStorageWorker.getById(projectId?.toString());
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const [error, setError] = useState(false);
   const taskId = searchParams.get('taskId');
-  const [TaskData, setTaskData] = useState<TaskType>({
+  const { projectId, userStoryId } = useParams<{ projectId: string, userStoryId: string }>();
+  const [userStory, setUserStory] = useState<DocumentData | null>(null);
+  const [taskDetails, setTaskDetails] = useState<DocumentData | null>(null);
+  const [error, setError] = useState(false);
+  const navigate = useNavigate();
+
+  const fetchUserStory = async () => {
+    if (projectId) {
+      const userStoryDb = await localStorageWorker.getById(projectId.toString());
+      setUserStory(userStoryDb);
+      return userStoryDb;
+    }
+  };
+
+  const fetchTaskDetails = async () => {
+    if (taskId) {
+      const taskDetailsDb = await localStorageWorker.getById(taskId.toString());
+      setTaskDetails(taskDetailsDb);
+      return taskDetailsDb;
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchUserStory();
+      await fetchTaskDetails();
+    };
+    fetchData();
+  }, [projectId, taskId]);
+
+  const [taskData, setTaskData] = useState<TaskType>({
     id: 0,
     description: '',
     name: '',
-    projectName: userStory.projectName,
+    projectName: '',
     startDate: 0,
     workHours: 0,
     assigner: '',
@@ -46,33 +64,27 @@ const Task = () => {
     userStoryId: userStoryId || '',
     projectId: projectId || '',
     type: 'task'
-
   });
+
   useEffect(() => {
-    if (taskId) {
-      const taskDetails: TaskType = localStorageWorker.getById(taskId);
-      if (taskDetails != null) {
-        setTaskData(prevData => ({
-          ...prevData,
-          description: taskDetails.description,
-          id: taskDetails.id,
-          name: taskDetails.name,
-          projectName: taskDetails.projectName,
-          startDate: taskDetails.startDate,
-          workHours: taskDetails.workHours,
-          assigner: taskDetails.assigner,
-          priority: taskDetails.priority,
-          state: taskDetails.state,
-          userStoryId: taskDetails.userStoryId,
-          projectId: taskDetails.projectId,
-          type: taskDetails.type
-        }))
-
-      }
+    if (taskDetails) {
+      setTaskData(prevData => ({
+        ...prevData,
+        description: taskDetails.description,
+        id: taskDetails.id,
+        name: taskDetails.name,
+        projectName: taskDetails.projectName,
+        startDate: taskDetails.startDate,
+        workHours: taskDetails.workHours,
+        assigner: taskDetails.assigner,
+        priority: taskDetails.priority,
+        state: taskDetails.state,
+        userStoryId: taskDetails.userStoryId,
+        projectId: taskDetails.projectId,
+        type: taskDetails.type
+      }));
     }
-  }, [taskId]);
-  const navigate = useNavigate();
-
+  }, [taskDetails]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { name, value } = event.target;
@@ -83,9 +95,7 @@ const Task = () => {
       ...prevData,
       [name as string]: newValue
     }));
-
   };
-
 
   const handleAssignerChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setTaskData(prevData => ({
@@ -97,63 +107,42 @@ const Task = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const newTask: TaskType = {
-      id: Date.now(),
-      description: TaskData.description,
-      name: TaskData.name,
-      startDate: undefined,
-      endDate: undefined,
-      workHours: TaskData.workHours,
-      assigner: TaskData.assigner,
-      priority: TaskData.priority,
-      projectName: TaskData.projectName,
-      state: TaskData.state,
-      userStoryId: userStoryId || '',
-      projectId: projectId || '',
-      type: 'task'
+      ...taskData,
+      id: taskId ? taskData.id : Date.now(),
     };
 
-    let startDate = TaskData.startDate;
-
-    if(taskId !== null){
-      newTask.description = TaskData.description;
-      newTask.id = TaskData.id;
-      newTask.name = TaskData.name;
-      newTask.projectName = TaskData.projectName;
-      newTask.workHours = TaskData.workHours;
-      newTask.assigner = TaskData.assigner;
-      newTask.priority=TaskData.priority;
-      newTask.state = TaskData.state;
-      newTask.userStoryId = TaskData.userStoryId;
-      newTask.projectId = TaskData.projectId;
-      newTask.type = TaskData.type;
-    }
-    if (TaskData.state === State.Doing && TaskData.assigner === "") {
+    if (taskData.state === State.Doing && !taskData.assigner) {
       setError(true);
       return;
     }
-    if (newTask.state == State.Doing) {
+    let startDate = taskData.startDate;
+
+    if (newTask.state === State.Doing) {
       newTask.startDate = Date.now();
       newTask.startDateDate = new Date(newTask.startDate)
     }
     if (newTask.state == State.Done) {
       if(startDate !== undefined){
-        newTask.startDateDate = new Date(startDate)
+        newTask.startDateDate = new Date(Date.now())
       }
       newTask.endDateDate = new Date(Date.now())
     }
-    if (projectId != undefined && userStoryId != undefined) {
+
+
+    if (projectId && userStoryId) {
       const notificationService = new NotificationService();
-      const newNotification: Notification = {
+      const newNotification = {
         id: 1,
         message: `New task created: ${newTask.name} for project ${newTask.projectName}`,
         read: false,
-        type:'notification'
+        type: 'notification'
       };
       notificationService.send(newNotification);
       localStorageWorker.add(newTask.id.toString(), newTask);
     }
     navigate(`/app/projects/${projectId}/userstory/${userStoryId}/tasklist`);
   };
+
   const handleOnChangeSelect = (e: SelectChangeEvent) => {
     setTaskData(prevData => ({
       ...prevData,
@@ -162,42 +151,34 @@ const Task = () => {
   };
 
   const users = [
-    {
-      value: "patryk b",
-      label: "patryk b",
-    },
-    {
-      value: "test",
-      label: "test",
-    },
+    { value: "patryk b", label: "patryk b" },
+    { value: "test", label: "test" },
   ];
-  console.log(TaskData)
+
   return (
     <div className="task">
       <div className="title">
         {taskId === null ? <h1>Create task</h1> : <h1>Edit task</h1>}
       </div>
       <form onSubmit={handleSubmit}>
-        <TextField name="description" id="outlined-description" value={TaskData.description} className="description" label="Task description"
+        <TextField name="description" id="outlined-description" value={taskData.description} className="description" label="Task description"
           InputLabelProps={{ shrink: true }} variant="outlined" onChange={handleInputChange} />
-        <TextField name="name" id="outlined-name" label="Task name" variant="outlined" InputLabelProps={{ shrink: true }} value={TaskData.name} onChange={handleInputChange} />
+        <TextField name="name" id="outlined-name" label="Task name" variant="outlined" InputLabelProps={{ shrink: true }} value={taskData.name} onChange={handleInputChange} />
         <TextField
           name="workHours"
           id="outlined-work-hours"
-          value={TaskData.workHours}
-          label="work hours"
+          value={taskData.workHours}
+          label="Work hours"
           type="number"
-          InputLabelProps={{
-            shrink: true,
-          }}
+          InputLabelProps={{ shrink: true }}
           onChange={handleInputChange}
         />
         <TextField
           id="outlined-select-user"
           select
-          label="Select asigner"
+          label="Select assigner"
           defaultValue=""
-          value={TaskData.assigner}
+          value={taskData.assigner}
           InputLabelProps={{ shrink: true }}
           onChange={handleAssignerChange}
           error={error}
@@ -211,11 +192,11 @@ const Task = () => {
         </TextField>
         <Box sx={{ minWidth: 120 }}>
           <FormControl fullWidth>
-            <InputLabel id="select-label">PRIORITY</InputLabel>
-            <Select labelId="select-label" id="select" name="priority" value={TaskData.priority} onChange={handleOnChangeSelect}>
-              {Object.values(Priority).map((state) => (
-                <MenuItem value={state} key={state}>
-                  {state}
+            <InputLabel id="select-priority-label">Priority</InputLabel>
+            <Select labelId="select-priority-label" id="select-priority" name="priority" value={taskData.priority} onChange={handleOnChangeSelect}>
+              {Object.values(Priority).map((priority) => (
+                <MenuItem value={priority} key={priority}>
+                  {priority}
                 </MenuItem>
               ))}
             </Select>
@@ -223,8 +204,8 @@ const Task = () => {
         </Box>
         <Box sx={{ minWidth: 120 }}>
           <FormControl fullWidth>
-            <InputLabel id="select-label">STATE</InputLabel>
-            <Select labelId="select-label" id="select" name="state" value={TaskData.state} onChange={handleOnChangeSelect}>
+            <InputLabel id="select-state-label">State</InputLabel>
+            <Select labelId="select-state-label" id="select-state" name="state" value={taskData.state} onChange={handleOnChangeSelect}>
               {Object.values(State).map((state) => (
                 <MenuItem value={state} key={state}>
                   {state}
@@ -234,7 +215,7 @@ const Task = () => {
           </FormControl>
         </Box>
         <button type="submit">
-          CREATE
+          {taskId === null ? "Create" : "Update"}
         </button>
       </form>
     </div>

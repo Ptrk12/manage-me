@@ -2,8 +2,17 @@ import { Button, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import "./project.scss";
 import ProjectList from '../projectList/ProjectList';
-import ProjectType from '../../types/projectType';
 import { localStorageWorker } from '../../storage/localStorageWorker';
+import TaskType from '../../types/TaskType';
+
+interface ProjectType {
+    id: number;
+    projectId: string;
+    projectName: string;
+    projectDescription: string;
+    type: string;
+    userStories: TaskType[]; 
+  }
 
 const Project: React.FC = () => {
     const [projectData, setProjectData] = useState<ProjectType>({
@@ -11,7 +20,8 @@ const Project: React.FC = () => {
         projectId: '', 
         projectName: '',
         projectDescription: '',
-        type:'project'
+        type:'project',
+        userStories:[]
     });
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,22 +31,33 @@ const Project: React.FC = () => {
             [name]: value
         }));
     };
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
         const newProject = {
             id: Date.now(), 
             projectId: projectData.projectId,
             projectName: projectData.projectName,
             projectDescription: projectData.projectDescription,
-            type:projectData.type
+            type:projectData.type,
+            userStories:projectData.userStories
         };
-        localStorageWorker.add(newProject.id.toString(), newProject);
-        console.log(newProject);
+        try {
+            await localStorageWorker.add(newProject.id.toString(), newProject);
+            console.log('Project added successfully');
+            
+            // eslint-disable-next-line no-restricted-globals
+            location.reload();
+        } catch (error) {
+            console.error('Error adding project: ', error);
+        }
+
         setProjectData({
             id: 0,
             projectId: '',
             projectName: '',
             projectDescription: '',
-            type:''
+            type:'',
+            userStories:[]
         });
     };
     return (

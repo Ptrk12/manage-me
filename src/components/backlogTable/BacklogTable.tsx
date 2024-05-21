@@ -11,6 +11,7 @@ import TaskType from "../../types/TaskType";
 import State from "../../enums/State";
 import { useState } from "react";
 import React from "react";
+import { localStorageWorker } from "../../storage/localStorageWorker";
 
 const BacklogTable = (props: { props: TaskType[] }) => {
   const tasks = props.props;
@@ -21,6 +22,7 @@ const BacklogTable = (props: { props: TaskType[] }) => {
   const doneTasks = tasks.filter((x) => x.state === State.Done);
 
   const handleChange = (event: SelectChangeEvent, taskId: number) => {
+    event.preventDefault();
     const taskToUpdate = tasks.find((x: TaskType) => x.id === taskId);
     const newState = event.target.value as State; 
     setState(newState);
@@ -28,8 +30,8 @@ const BacklogTable = (props: { props: TaskType[] }) => {
     if (taskToUpdate != undefined) {
       taskToUpdate.state = newState; 
       console.log(newState); 
-      localStorage.setItem(taskId.toString(), JSON.stringify(taskToUpdate));
-      window.location.reload(); 
+      localStorageWorker.updateById(taskId.toString(), taskToUpdate);
+ 
     }
   };
   

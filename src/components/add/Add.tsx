@@ -1,5 +1,5 @@
 import { GridColDef } from "@mui/x-data-grid";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
@@ -22,19 +22,15 @@ type Props = {
   slug: string;
   columns: GridColDef[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  handleOnChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (newUserStory: userStoryType) => void;
+  handleOnChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleTextAreaChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void; 
   handleOnChangeSelect?: (e: SelectChangeEvent) => void;
-  selectValues?: string[];
   priority: Priority;
   state: State;
 };
 
-
 const Add = (props: Props) => {
-    let { id } = useParams();
-    let project = localStorageWorker.getById(id?.toString());
   const { slug, columns, setOpen, handleSubmit } = props;
   const [userStoryData, setUserStoryData] = useState<userStoryType>({
     id: 0,
@@ -42,11 +38,25 @@ const Add = (props: Props) => {
     description: '',
     priority: Priority.Low,
     state: State.ToDo,
-    createdBy: new userType('patryk','b',"123"),
-    projectName:project.projectName,
-    projectId:id,
+    projectName: '',
+    projectId: '',
     type:'userStory'
   });
+  const { id } = useParams<{ id?: string }>(); // Specify that id could be undefined
+
+  useEffect(() => {
+    if (id) {
+      const fetchData = async () => {
+        const project = await localStorageWorker.getById(id);
+        setUserStoryData((prevData) => ({
+          ...prevData,
+          projectName: project?.projectName || "",
+          projectId: id
+        }));
+      };
+      fetchData();
+    }
+  }, [id]);
 
   const handleOnChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserStoryData(prevData => ({

@@ -8,7 +8,7 @@ type Props = {
     rows:object[];
     handleRowClick: (rowSelectionModel: GridRowSelectionModel) => void;
     selectedRow: string|null;
-    handleDelete: () => void;
+    handleDelete: () => Promise<void>;
 }
 
 const DataTable = (props:Props) => {

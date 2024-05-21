@@ -7,10 +7,10 @@ class TaskType {
   description:string;
   name:string;
   projectName: string;
-  startDate?: number;
-  endDate?: number;
-  startDateDate?:Date;
-  endDateDate?:Date;
+  startDate?: number | null;
+  endDate?: number | null;
+  startDateDate?:Date | null;
+  endDateDate?:Date | null;
   workHours: number;
   assigner: string;
   priority:Priority;

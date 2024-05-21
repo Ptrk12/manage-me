@@ -1,51 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import { localStorageWorker } from '../../storage/localStorageWorker';
+import React, { useState, useEffect, useCallback } from 'react';
+import { localStorageWorker } from '../../storage/localStorageWorker'; 
 import "./projectList.scss";
 import { Link } from 'react-router-dom';
-import { GridColDef, GridRowSelectionModel, DataGrid, GridToolbar } from '@mui/x-data-grid';
-import IconButton from '@mui/material/IconButton';
-import CheckIcon from '@mui/icons-material/Check';
+import { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 import DataTable from '../../components/dataTable/DataTable';
 
 const ProjectList = () => {
-  // localStorage.clear();
-  const items = localStorageWorker.getAllItems();
-  console.log(items);
-  const projects = items.filter(x=>x.type==="project");
+  const [projects, setProjects] = useState<any[]>([]);
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
-  const [rows, setRows] = useState(projects);
+
+  const fetchProjects = useCallback(async () => {
+    const items = await localStorageWorker.getAll();
+    const projects = items.filter(x => x.type === "project");
+    setProjects(projects);
+  }, []);
+
   useEffect(() => {
-    setRows(projects);
-  }, [selectedRow]);
+    fetchProjects();
+  }, [fetchProjects]);
 
   const handleRowClick = (rowSelectionModel: GridRowSelectionModel) => {
     if (rowSelectionModel.length === 1) {
-      setSelectedRow(rowSelectionModel[0].toString())
+      setSelectedRow(rowSelectionModel[0].toString());
     } else {
-      setSelectedRow(null);
-    }
-  }
-
-  const handleSetProjectActive = (projectId: string) => {
-    const allItems = localStorageWorker.getAllItems();
-    for (let i = 0; i < allItems.length; i++) {
-      let item = localStorageWorker.getById(allItems[i].id.toString())
-      item.isActive = false;
-      localStorage.setItem(allItems[i].id.toString(),JSON.stringify(item));
-    }
-    let foundProject = localStorageWorker.getById(projectId);
-    foundProject.isActive = true;
-    localStorage.setItem(projectId,JSON.stringify(foundProject))
-  }
-
-  const handleDelete = () => {
-    if (selectedRow != null) {
-      localStorageWorker.delete(selectedRow);
       setSelectedRow(null);
     }
   };
 
-  const columns: GridColDef<(typeof rows)[number]>[] = [
+  const handleDelete = async (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (e) {
+      e.preventDefault();
+    }
+    if (selectedRow != null) {
+      try {
+        await localStorageWorker.delete(selectedRow);
+        await fetchProjects(); 
+        setSelectedRow(null);
+      } catch (error) {
+        console.error('Error deleting project: ', error);
+      }
+    }
+  };
+
+  const columns: GridColDef<(typeof projects)[number]>[] = [
     {
       field: 'projectId',
       headerName: 'Project Id',
@@ -65,25 +62,17 @@ const ProjectList = () => {
       editable: false,
     },
     {
-      field: 'isActive',
-      headerName: 'Active',
-      width: 250,
-      type: 'boolean',
-      editable: false,
-    },
-    {
       field: 'actions',
       headerName: 'Actions',
       width: 250,
       renderCell: (params) => {
-        return <div className='action'>
-          <Link className='link' to={`/app/projects/${params.row.id}`}>
-            GO INTO
-          </Link>
-          <IconButton onClick={() => handleSetProjectActive(params.row.id.toString())}>
-            <CheckIcon></CheckIcon>
-          </IconButton>
-        </div>
+        return (
+          <div className='action'>
+            <Link className='link' to={`/app/projects/${params.row.id}`}>
+              GO INTO
+            </Link>
+          </div>
+        );
       }
     }
   ];
@@ -91,9 +80,15 @@ const ProjectList = () => {
   return (
     <div>
       <h3>Projects list</h3>
-      <DataTable columns ={columns} rows={rows} handleRowClick={handleRowClick} handleDelete={handleDelete} selectedRow={selectedRow} />
-  </div>
+      <DataTable 
+        columns={columns} 
+        rows={projects} 
+        handleRowClick={handleRowClick} 
+        handleDelete={handleDelete} 
+        selectedRow={selectedRow} 
+      />
+    </div>
   );
-}
+};
 
 export default ProjectList;
