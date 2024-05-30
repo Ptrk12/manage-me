@@ -42,7 +42,7 @@ const Add = (props: Props) => {
     projectId: '',
     type:'userStory'
   });
-  const { id } = useParams<{ id?: string }>(); // Specify that id could be undefined
+  const { id } = useParams<{ id?: string }>(); 
 
   useEffect(() => {
     if (id) {

@@ -20,7 +20,7 @@ import { Observable } from "rxjs";
 
 const Layout = () => {
 
-  const [unreadNotifications, setUnreadNotifications] = useState<number | null>(null);
+  const [unreadNotifications, setUnreadNotifications] = useState<number>(0);
   const notificationService = new NotificationService();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const Layout = () => {
       next: count => setUnreadNotifications(count),
       error: error => console.error('Failed to fetch unread notifications count', error),
     });
-
+    
     return () => {
       subscription.unsubscribe();
     };

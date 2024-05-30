@@ -103,7 +103,6 @@ const Task = () => {
       assigner: event.target.value as string
     }));
   };
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const newTask: TaskType = {
@@ -137,10 +136,20 @@ const Task = () => {
         read: false,
         type: 'notification'
       };
-      notificationService.send(newNotification);
-      localStorageWorker.add(newTask.id.toString(), newTask);
+      if(taskId === null){
+        console.log("NULLLLL");
+        notificationService.send(newNotification);
+        localStorageWorker.add(newTask.id.toString(), newTask);
+        navigate(`/app/projects/${projectId}/userstory/${userStoryId}/tasklist`);
+        window.location.reload();
+      }else{
+        console.log("NOT NULL")
+        localStorageWorker.updateById(newTask.id.toString(),newTask);
+        navigate(`/app/projects/${projectId}/userstory/${userStoryId}/tasklist`);
+      }
+
     }
-    navigate(`/app/projects/${projectId}/userstory/${userStoryId}/tasklist`);
+
   };
 
   const handleOnChangeSelect = (e: SelectChangeEvent) => {

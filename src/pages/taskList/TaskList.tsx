@@ -51,7 +51,6 @@ const TaskList = () => {
     setRows(tasks);
   }, [selectedRow, tasks]);
 
-  console.log(tasks)
 
   const handleRowClick = (rowSelectionModel: GridRowSelectionModel) => {
     if (rowSelectionModel.length === 1) {

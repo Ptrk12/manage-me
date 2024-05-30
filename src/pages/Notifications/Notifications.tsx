@@ -48,6 +48,7 @@ const Notifications: React.FC = () => {
     if (updatedNotification) {
       notificationService.send(updatedNotification);
     }
+    window.location.reload();
   };
 
   return (

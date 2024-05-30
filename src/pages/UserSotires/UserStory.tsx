@@ -194,7 +194,7 @@ const Tasks = () => {
       {open && (
         <Add
           handleTextAreaChange={handleTextAreaChange}
-          slug="task"
+          slug="user story"
           columns={columns}
           setOpen={setOpen}
           handleOnChangeInput={handleOnChangeInput}

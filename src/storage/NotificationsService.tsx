@@ -34,7 +34,7 @@ export class NotificationService {
       notifications.push(notification);
     }
     this.saveNotificationsToStorage(notifications);
-    this.notificationsSubject.next(notifications);
+    this.notificationsSubject.next(notifications); // Notify subscribers of the change
   }
 
   list(): Observable<Notification[]> {
