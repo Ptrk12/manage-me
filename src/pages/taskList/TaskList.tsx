@@ -70,7 +70,6 @@ const TaskList = () => {
       setRefresh(prev => !prev); 
     }
   };
-
   const columns: GridColDef<(typeof rows)[number]>[] = [
     {
       field: 'name',

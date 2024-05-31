@@ -26,10 +26,20 @@ const BacklogTable = (props: { props: TaskType[] }) => {
     const taskToUpdate = tasks.find((x: TaskType) => x.id === taskId);
     const newState = event.target.value as State; 
     setState(newState);
-  
+
     if (taskToUpdate != undefined) {
+      let startDate = taskToUpdate.startDate;
       taskToUpdate.state = newState; 
-      console.log(newState); 
+      if (taskToUpdate.state === State.Doing) {
+        taskToUpdate.startDate = Date.now();
+        taskToUpdate.startDateDate = new Date(taskToUpdate.startDate).toString()
+      }
+      if (taskToUpdate.state == State.Done) {
+        if(startDate === undefined || startDate == null){
+          taskToUpdate.startDateDate = new Date(Date.now()).toString()
+        }
+        taskToUpdate.endDateDate = new Date(Date.now()).toString();
+      }
       localStorageWorker.updateById(taskId.toString(), taskToUpdate);
  
     }
@@ -58,10 +68,10 @@ const BacklogTable = (props: { props: TaskType[] }) => {
                 <b>Assigner:</b> {task.assigner}
               </div>
               <div className="button">
-                <InputLabel id="demo-simple-select-label">State</InputLabel>
+                <InputLabel id="simple-select-label">State</InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
+                  labelId="simple-select-label"
+                  id="simple-select"
                   value={task.state}
                   label="Age"
                   onChange={(event) => handleChange(event, task.id)}
@@ -100,10 +110,10 @@ const BacklogTable = (props: { props: TaskType[] }) => {
                 <b>Assigner:</b> {task.assigner}
               </div>
               <div className="button">
-                <InputLabel id="demo-simple-select-label">State</InputLabel>
+                <InputLabel id="simple-select-label">State</InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
+                  labelId="simple-select-label"
+                  id="simple-select"
                   value={task.state}
                   label="Age"
                   onChange={(event) => handleChange(event, task.id)}
@@ -142,10 +152,10 @@ const BacklogTable = (props: { props: TaskType[] }) => {
                 <b>Assigner:</b> {task.assigner}
               </div>
               <div className="button">
-                <InputLabel id="demo-simple-select-label">State</InputLabel>
+                <InputLabel id="simple-select-label">State</InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
+                  labelId="simple-select-label"
+                  id="simple-select"
                   value={task.state}
                   label="Age"
                   onChange={(event) => handleChange(event, task.id)}

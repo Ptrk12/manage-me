@@ -15,38 +15,14 @@ import React, { useEffect, useState } from "react";
 import LoginPage from "./pages/login/LoginPage";
 import Logout from './components/Logout/Logout';
 import Notifications from "./pages/Notifications/Notifications";
-import { NotificationService } from "./storage/NotificationsService";
 import { Observable } from "rxjs";
+import Navbar from "./components/navbar/Navbar";
 
 const Layout = () => {
 
-  const [unreadNotifications, setUnreadNotifications] = useState<number>(0);
-  const notificationService = new NotificationService();
-
-  useEffect(() => {
-    const subscription = notificationService.unreadCount().subscribe({
-      next: count => setUnreadNotifications(count),
-      error: error => console.error('Failed to fetch unread notifications count', error),
-    });
-    
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [notificationService]);
-
   return (
     <div className="main">
-      <Link to={`/app/projects`}>
-        <Button variant="contained">HOME</Button>
-      </Link>
-      <div className="notificationsButton">
-      <Link to={`/app/notifications`}>
-        <Button variant="contained">NOTIFICATIONS</Button>
-        <span className="unread-notifications">{unreadNotifications}</span>
-      </Link>
-      </div>
-
-      <Logout />
+      <Navbar />
       <div className="container">
         <div className="menuContainer"></div>
         <div className="contentContainer">

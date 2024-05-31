@@ -9,8 +9,8 @@ class TaskType {
   projectName: string;
   startDate?: number | null;
   endDate?: number | null;
-  startDateDate?:Date | null;
-  endDateDate?:Date | null;
+  startDateDate?:string | null;
+  endDateDate?:string | null;
   workHours: number;
   assigner: string;
   priority:Priority;

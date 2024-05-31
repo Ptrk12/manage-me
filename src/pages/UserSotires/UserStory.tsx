@@ -77,7 +77,7 @@ const Tasks = () => {
   useEffect(() => {
     fetchData();
   }, [id]);
-  
+
   const handleSubmit = async (newUserStory: userStoryType) => {
     if (id !== undefined) {
       const project = await localStorageWorker.getById(id.toString());
@@ -87,13 +87,13 @@ const Tasks = () => {
         }
         newUserStory.id = Math.random();
         project.userStories.push(newUserStory);
-  
+
         localStorageWorker.updateById(id.toString(), project);
         setRowsTask([...(project.userStories || [])]);
       }
     }
   };
-  
+
 
   const handleRowClick = (rowSelectionModel: GridRowSelectionModel) => {
     if (rowSelectionModel.length === 1) {
@@ -112,10 +112,10 @@ const Tasks = () => {
         const project = await localStorageWorker.getById(id.toString());
         if (project && project.userStories) {
 
-          const updatedUserStories = project.userStories.filter(x=>x.id != selectedRowTask)
+          const updatedUserStories = project.userStories.filter(x => x.id != selectedRowTask)
           project.userStories = updatedUserStories;
           await localStorageWorker.updateById(id.toString(), project);
-          
+
           fetchData();
         } else {
           console.log("No project or user stories found");
@@ -127,7 +127,7 @@ const Tasks = () => {
       console.log("Invalid selectedRowTask or id");
     }
   };
-  
+
 
   const columns: GridColDef<userStoryType>[] = [
     {
@@ -181,6 +181,9 @@ const Tasks = () => {
 
   return (
     <div className="taskList">
+      <div className="title">
+        User story list
+      </div>
       <div className="buttons">
         <IconButton onClick={() => setOpen(true)}>
           <AddIcon />

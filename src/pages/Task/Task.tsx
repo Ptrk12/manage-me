@@ -118,13 +118,13 @@ const Task = () => {
 
     if (newTask.state === State.Doing) {
       newTask.startDate = Date.now();
-      newTask.startDateDate = new Date(newTask.startDate)
+      newTask.startDateDate = new Date(newTask.startDate).toString()
     }
     if (newTask.state == State.Done) {
-      if(startDate !== undefined){
-        newTask.startDateDate = new Date(Date.now())
+      if(startDate === undefined || startDate == null){
+        newTask.startDateDate = new Date(Date.now()).toString()
       }
-      newTask.endDateDate = new Date(Date.now())
+      newTask.endDateDate = new Date(Date.now()).toString();
     }
 
 
@@ -141,7 +141,9 @@ const Task = () => {
         notificationService.send(newNotification);
         localStorageWorker.add(newTask.id.toString(), newTask);
         navigate(`/app/projects/${projectId}/userstory/${userStoryId}/tasklist`);
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       }else{
         console.log("NOT NULL")
         localStorageWorker.updateById(newTask.id.toString(),newTask);
